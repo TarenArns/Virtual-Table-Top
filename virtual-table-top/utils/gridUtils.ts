@@ -1,11 +1,8 @@
-import Grid from "@/components/grid";
-
-
 
 
 
 export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }) {
-    let newGrid: grid = {
+    const newGrid: grid = {
         dimensions: dimensions,
         grid: [[]],
     }
@@ -18,7 +15,7 @@ export function buildGrid(items: gridItem[], dimensions: { rows: number; columns
             if (item) {
                 newGrid.grid[r][c] = item;
             } else {
-                newGrid.grid[r][c] = { id: items.length + count, position: { x: c, y: r }, content: "" }; // Empty cell
+                newGrid.grid[r][c] = { id: items.length + count, position: { x: c, y: r }, content: undefined };
             }
 
         }

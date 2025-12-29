@@ -3,7 +3,7 @@
 type gridItem = {
     id: number|undefined;
     position: { x: number; y: number; };
-    content: string;
+    content: string | undefined;
 };
 
 type grid = {
