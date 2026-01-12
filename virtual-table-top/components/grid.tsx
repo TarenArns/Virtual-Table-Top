@@ -1,17 +1,18 @@
 "use client";
-import { buildGrid } from "@/utils/gridUtils";
+import { buildGrid, swapPositions } from "@/utils/gridUtils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
 
 
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
+    const [isMoving, setIsMoving] = useState<boolean>(false);
+    const [battleMap, setBattleMap] = useState<grid>(() => buildGrid(props.items, props.dimensions));
 
-
-    var battleMap: grid = buildGrid(props.items, props.dimensions);
     const Controls = () => {
         const { resetTransform } = useControls();
         return (
@@ -22,7 +23,12 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     };
 
     function handleClick(item: gridItem) {
-        setSelectedItem(item);
+        if(isMoving && selectedItem) {
+            setBattleMap(swapPositions(battleMap, selectedItem, item));
+            setIsMoving(false);
+            setSelectedItem(null);
+        }
+        else setSelectedItem(item);
     }
 
     return (
@@ -34,13 +40,14 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         <div>
                             <h2 className="text-xl font-bold mb-2">Selected Item</h2>
                             <p><strong>Selcted Player:</strong> {selectedItem.player.name}</p>
+                            <Button size="sm" onClick={() => setIsMoving(true)}>Move</Button>
                         </ div>
                     ) : (
                         <h2 className="text-xl font-bold mb-2">No Item Selected</h2>
                     )}
                 </div>
             </section>
-            <section className="flex-grow">
+            <section>
                 <div className="border-4 border-gray-300">
                     <TransformWrapper
                         limitToBounds={false}

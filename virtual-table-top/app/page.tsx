@@ -9,11 +9,11 @@ import miles from "../public/will (miles dei).jpg";
 export default function Home() {
 
   const players: playerCharacter[] = [
-    { name: "Sam", image: three.src },
-    { name: "Colton", image: cheese.src },
-    { name: "Brad", image: edvard.src },
-    { name: "Will", image: miles.src },
-    { name: "Ben", image: blarg.src },
+    { name: "Three", image: three.src },
+    { name: "OJ \"Big Cheese\" Simpson", image: cheese.src },
+    { name: "Edvard Sangren", image: edvard.src },
+    { name: "Miles Dei", image: miles.src },
+    { name: "Blarg", image: blarg.src },
   ]
 
   const items: gridItem[] = [
