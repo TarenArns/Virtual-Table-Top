@@ -3,7 +3,6 @@ import { buildGrid } from "@/utils/gridUtils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { useState } from "react";
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
