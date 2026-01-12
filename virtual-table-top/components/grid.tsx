@@ -23,31 +23,43 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     };
 
     function handleClick(item: gridItem) {
-        if(isMoving && selectedItem) {
+        if (isMoving && selectedItem) {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
             setIsMoving(false);
             setSelectedItem(null);
         }
-        else setSelectedItem(item);
+        else if (item.type === 'player') {
+            setSelectedItem(item);
+        }
+
+        console.log(selectedItem);
     }
 
     return (
         <main className="h-full w-full flex">
-            <section>
+            <section className="w-[25%] border-r border-gray-300">
                 <div className="selected-item-info p-4 border-b border-gray-300">
-
-                    {selectedItem ? (
+                    {selectedItem?.stats ? (
                         <div>
                             <h2 className="text-xl font-bold mb-2">Selected Item</h2>
-                            <p><strong>Selcted Player:</strong> {selectedItem.player.name}</p>
-                            <Button size="sm" onClick={() => setIsMoving(true)}>Move</Button>
+                            <p><strong>Selcted Player:</strong> {selectedItem.stats.name}</p>
+                            <p><strong>Strength:</strong> {selectedItem.stats.strength}</p>
+                            <p><strong>Dexterity:</strong> {selectedItem.stats.dexterity}</p>
+                            <p><strong>Constitution:</strong> {selectedItem.stats.constitution}</p>
+                            <p><strong>Intelligence:</strong> {selectedItem.stats.intelligence}</p>
+                            <p><strong>Wisdom:</strong> {selectedItem.stats.wisdom}</p>
+                            <p><strong>Charisma:</strong> {selectedItem.stats.charisma}</p>
+                            <p><strong>Movement Speed:</strong> {selectedItem.stats.movementSpeed}</p>
+                            <Button size="sm" onClick={() => setIsMoving(true)}>
+                                {!isMoving ? 'Move' : 'Moving...'}
+                            </Button>
                         </ div>
                     ) : (
                         <h2 className="text-xl font-bold mb-2">No Item Selected</h2>
                     )}
                 </div>
             </section>
-            <section>
+            <section className="w-[75%]">
                 <div className="border-4 border-gray-300">
                     <TransformWrapper
                         limitToBounds={false}
@@ -66,7 +78,9 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         {battleMap.grid.map((cols) => (
                                             cols.map((item) => (
                                                 <div key={item.id} className="grid-item aspect-square border border-blue-400 flex items-center justify-center overflow-hidden" onClick={() => handleClick(item)}>
-                                                    <img src={item.player.image} />
+                                                    {item.stats &&
+                                                        <img src={item.stats.image} />
+                                                    }
                                                 </div>
                                             ))
                                         ))}

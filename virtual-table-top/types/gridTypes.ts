@@ -1,17 +1,23 @@
-
-
-type gridItem = {
-    id: number|undefined;
-    position: { x: number; y: number; };
-    player: playerCharacter;
-};
-
-type playerCharacter = {
-    name: string;
-    image: string | undefined;
-}
-
 type grid = {
     dimensions: { rows: number; columns: number; };
     grid: gridItem[][];
 };
+
+type gridItem = {
+    id: number | undefined;
+    position: { x: number; y: number; };
+    type: 'player' | 'npc' | 'empty';
+    stats: playerCharacter | null;
+};
+
+type playerCharacter = {
+    name: string;
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    intelligence: number;
+    wisdom: number;
+    charisma: number;
+    movementSpeed: number;
+    image: string | undefined;
+}
