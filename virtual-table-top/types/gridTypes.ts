@@ -3,8 +3,13 @@
 type gridItem = {
     id: number|undefined;
     position: { x: number; y: number; };
-    content: string | undefined;
+    player: playerCharacter;
 };
+
+type playerCharacter = {
+    name: string;
+    image: string | undefined;
+}
 
 type grid = {
     dimensions: { rows: number; columns: number; };

@@ -1,6 +1,3 @@
-
-
-
 export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }) {
     const newGrid: grid = {
         dimensions: dimensions,
@@ -15,7 +12,8 @@ export function buildGrid(items: gridItem[], dimensions: { rows: number; columns
             if (item) {
                 newGrid.grid[r][c] = item;
             } else {
-                newGrid.grid[r][c] = { id: items.length + count, position: { x: c, y: r }, content: undefined };
+                const player: playerCharacter = { name: (items.length + count).toString(), image: undefined }
+                newGrid.grid[r][c] = { id: items.length + count, position: { x: c, y: r }, player: player };
             }
 
         }

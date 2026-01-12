@@ -8,13 +8,20 @@ import miles from "../public/will (miles dei).jpg";
 
 export default function Home() {
 
+  const players: playerCharacter[] = [
+    { name: "Sam", image: three.src },
+    { name: "Colton", image: cheese.src },
+    { name: "Brad", image: edvard.src },
+    { name: "Will", image: miles.src },
+    { name: "Ben", image: blarg.src },
+  ]
 
   const items: gridItem[] = [
-    { id: 1, position: { x: 0, y: 0 }, content: three.src },
-    { id: 2, position: { x: 10, y: 10 }, content: cheese.src },
-    { id: 3, position: { x: 0, y: 19 }, content: edvard.src },
-    { id: 4, position: { x: 19, y: 0 }, content: blarg.src },
-    { id: 5, position: { x: 19, y: 19 }, content: miles.src },
+    { id: 1, position: { x: 0, y: 0 }, player: players[0] },
+    { id: 2, position: { x: 10, y: 10 }, player: players[1] },
+    { id: 3, position: { x: 0, y: 19 }, player: players[2] },
+    { id: 4, position: { x: 19, y: 0 }, player: players[3] },
+    { id: 5, position: { x: 19, y: 19 }, player: players[4] },
   ]
 
   return (
