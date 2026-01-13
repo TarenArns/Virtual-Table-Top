@@ -23,15 +23,15 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     };
 
     function handleClick(item: gridItem) {
-        if (isMoving && selectedItem) {
+
+        if (isMoving && selectedItem && item.type === 'empty') {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
             setIsMoving(false);
             setSelectedItem(null);
         }
-        else if (item.type !== 'empty') {
+        else if (!isMoving && item.type !== 'empty') {
             setSelectedItem(item);
         }
-
         console.log(selectedItem);
     }
 
@@ -57,7 +57,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                     </Button>
                                 ) : (
                                     <div className="text-red-600">
-                                        select a location to move to
+                                        select an empty location to move to
                                         <Button size="sm" disabled={true}>
                                             Move
                                         </Button>
