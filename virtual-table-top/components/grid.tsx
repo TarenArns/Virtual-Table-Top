@@ -5,7 +5,7 @@ import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import background from "../public/Background.jpg";
-
+import type { gridItem, grid } from "@/types/gridTypes";
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
@@ -62,8 +62,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                             Move
                                         </Button>
                                     </div>
-                                )
-                                }
+                                )}
                             </ div>
                         ) : (
                             <div>
@@ -84,34 +83,32 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         minScale={0.1}
                         maxScale={10}
                     >
-                        {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                            <div>
-                                <Controls />
-                                <TransformComponent>
-                                    <div className="grid content-start justify-center h-full w-full overflow-hidden"
-                                        style={{
-                                            gridTemplateColumns: `repeat(${props.dimensions.columns}, minmax(0, 1fr))`,
-                                            backgroundImage: `url(${background.src})`,
-                                            backgroundSize: "100% 100%",
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                        }}>
-                                        {battleMap.grid.map((cols) => (
-                                            cols.map((item) => (
-                                                <div key={item.id} className="grid-item aspect-square border border-blue-400 flex items-center justify-center overflow-hidden" onClick={() => handleClick(item)}>
-                                                    {item.stats?.image ? (
-                                                        <img src={item.stats.image} />
-                                                    ) : (
-                                                        <div className="text-black">{item.stats?.name}</div>
-                                                    )
-                                                    }
-                                                </div>
-                                            ))
-                                        ))}
-                                    </div>
-                                </TransformComponent>
-                            </div>
-                        )}
+                        <div>
+                            <Controls />
+                            <TransformComponent>
+                                <div className="grid content-start justify-center h-full w-full overflow-hidden"
+                                    style={{
+                                        gridTemplateColumns: `repeat(${props.dimensions.columns}, minmax(0, 1fr))`,
+                                        backgroundImage: `url(${background.src})`,
+                                        backgroundSize: "100% 100%",
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                    }}>
+                                    {battleMap.grid.map((cols) => (
+                                        cols.map((item) => (
+                                            <div key={item.id} className="grid-item aspect-square border border-blue-400 flex items-center justify-center overflow-hidden" onClick={() => handleClick(item)}>
+                                                {item.stats?.image ? (
+                                                    <img src={item.stats.image} alt={item.stats.name}/>
+                                                ) : (
+                                                    <div className="text-black">{item.stats?.name}</div>
+                                                )
+                                                }
+                                            </div>
+                                        ))
+                                    ))}
+                                </div>
+                            </TransformComponent>
+                        </div>
                     </TransformWrapper>
                 </div>
             </section>

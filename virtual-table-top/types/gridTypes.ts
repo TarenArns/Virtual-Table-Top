@@ -34,3 +34,5 @@ type npcCharacter = {
     movementSpeed: number;
     image: string | undefined;
 }
+
+export type { grid, gridItem, playerCharacter, npcCharacter };
