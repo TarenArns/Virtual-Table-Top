@@ -4,10 +4,11 @@ import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pa
 import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import background from "../public/Background.jpg";
+
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
-
 
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
     const [isMoving, setIsMoving] = useState<boolean>(false);
@@ -23,7 +24,6 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     };
 
     function handleClick(item: gridItem) {
-
         if (isMoving && selectedItem && item.type === 'empty') {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
             setIsMoving(false);
@@ -40,7 +40,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
             <section className="w-[25%] border-r border-gray-300">
                 <div className="selected-item-info p-4 border-b border-gray-300">
                     {selectedItem?.stats ? (
-                        selectedItem.type === 'player' ? (
+                        selectedItem.type === 'player' || selectedItem.type === 'npc' ? (
                             <div>
                                 <h2 className="text-xl font-bold mb-2">Selected Item</h2>
                                 <p><strong>Selcted Player:</strong> {selectedItem.stats.name}</p>
@@ -85,12 +85,16 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         maxScale={10}
                     >
                         {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                            <>
+                            <div>
                                 <Controls />
                                 <TransformComponent>
                                     <div className="grid content-start justify-center h-full w-full overflow-hidden"
                                         style={{
                                             gridTemplateColumns: `repeat(${props.dimensions.columns}, minmax(0, 1fr))`,
+                                            backgroundImage: `url(${background.src})`,
+                                            backgroundSize: "100% 100%",
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
                                         }}>
                                         {battleMap.grid.map((cols) => (
                                             cols.map((item) => (
@@ -98,7 +102,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                     {item.stats?.image ? (
                                                         <img src={item.stats.image} />
                                                     ) : (
-                                                        <div className="text-gray-400">{item.stats?.name}</div>
+                                                        <div className="text-black">{item.stats?.name}</div>
                                                     )
                                                     }
                                                 </div>
@@ -106,7 +110,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         ))}
                                     </div>
                                 </TransformComponent>
-                            </>
+                            </div>
                         )}
                     </TransformWrapper>
                 </div>
