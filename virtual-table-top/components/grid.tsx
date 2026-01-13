@@ -6,6 +6,16 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import background from "../public/Background.jpg";
 import type { gridItem, grid } from "@/types/gridTypes";
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
@@ -38,6 +48,26 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     return (
         <main className="h-full w-full flex">
             <section className="w-[25%] border-r border-gray-300">
+                <Drawer>
+                    <DrawerTrigger asChild>
+                        <Button>See other tools</Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                        <div className="mx-auto w-full max-w-sm">
+                            <DrawerHeader>
+                                <DrawerTitle>Tools</DrawerTitle>
+                            </DrawerHeader>
+                            <div className="p-4 pb-0">
+                                {/* tool buttons go here */}
+                            </div>
+                            <DrawerFooter>
+                                <DrawerClose asChild>
+                                    <Button variant="outline">Close</Button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </div>
+                    </DrawerContent>
+                </Drawer>
                 <div className="selected-item-info p-4 border-b border-gray-300">
                     {selectedItem?.stats ? (
                         selectedItem.type === 'player' || selectedItem.type === 'npc' ? (
@@ -98,7 +128,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         cols.map((item) => (
                                             <div key={item.id} className="grid-item aspect-square border border-blue-400 flex items-center justify-center overflow-hidden" onClick={() => handleClick(item)}>
                                                 {item.stats?.image ? (
-                                                    <img src={item.stats.image} alt={item.stats.name}/>
+                                                    <img src={item.stats.image} alt={item.stats.name} />
                                                 ) : (
                                                     <div className="text-black">{item.stats?.name}</div>
                                                 )
