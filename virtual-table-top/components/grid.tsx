@@ -33,7 +33,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
         );
     };
 
-    function handleClick(item: gridItem) {
+    function handleClick(item: gridItem): void {
         if (isMoving && selectedItem && item.type === 'empty') {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
             setIsMoving(false);
@@ -43,6 +43,18 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
             setSelectedItem(item);
         }
         console.log(selectedItem);
+    }
+
+    function addPlayer(): void {
+        throw new Error("Function not implemented.");
+    }
+
+    function addNPC(): void {
+        throw new Error("Function not implemented.");
+    }
+
+    function removeItem(): void {
+        throw new Error("Function not implemented.");
     }
 
     return (
@@ -57,12 +69,15 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                             <DrawerHeader>
                                 <DrawerTitle>Tools</DrawerTitle>
                             </DrawerHeader>
-                            <div className="p-4 pb-0">
+                            <div className="p-4 pb-0 flex items-center justify-center">
                                 {/* tool buttons go here */}
+                                <Button className="w-full m-2" onClick={() => addPlayer()}>Add Player</Button>
+                                <Button className="w-full m-2" onClick={() => addNPC()}>Add NPC</Button>
+                                <Button className="w-full m-2"onClick={() => removeItem()}>Remove Item</Button>
                             </div>
                             <DrawerFooter>
                                 <DrawerClose asChild>
-                                    <Button variant="outline">Close</Button>
+                                    <Button variant="destructive">Close</Button>
                                 </DrawerClose>
                             </DrawerFooter>
                         </div>
