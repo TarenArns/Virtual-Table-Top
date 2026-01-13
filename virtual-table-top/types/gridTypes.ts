@@ -21,3 +21,16 @@ type playerCharacter = {
     movementSpeed: number;
     image: string | undefined;
 }
+
+type npcCharacter = {
+    name: string;
+    challengeRating: number;
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    intelligence: number;
+    wisdom: number;
+    charisma: number;
+    movementSpeed: number;
+    image: string | undefined;
+}

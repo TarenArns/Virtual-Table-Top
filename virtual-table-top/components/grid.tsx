@@ -28,7 +28,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
             setIsMoving(false);
             setSelectedItem(null);
         }
-        else if (item.type === 'player') {
+        else if (item.type !== 'empty') {
             setSelectedItem(item);
         }
 
@@ -40,20 +40,37 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
             <section className="w-[25%] border-r border-gray-300">
                 <div className="selected-item-info p-4 border-b border-gray-300">
                     {selectedItem?.stats ? (
-                        <div>
-                            <h2 className="text-xl font-bold mb-2">Selected Item</h2>
-                            <p><strong>Selcted Player:</strong> {selectedItem.stats.name}</p>
-                            <p><strong>Strength:</strong> {selectedItem.stats.strength}</p>
-                            <p><strong>Dexterity:</strong> {selectedItem.stats.dexterity}</p>
-                            <p><strong>Constitution:</strong> {selectedItem.stats.constitution}</p>
-                            <p><strong>Intelligence:</strong> {selectedItem.stats.intelligence}</p>
-                            <p><strong>Wisdom:</strong> {selectedItem.stats.wisdom}</p>
-                            <p><strong>Charisma:</strong> {selectedItem.stats.charisma}</p>
-                            <p><strong>Movement Speed:</strong> {selectedItem.stats.movementSpeed}</p>
-                            <Button size="sm" onClick={() => setIsMoving(true)}>
-                                {!isMoving ? 'Move' : 'Moving...'}
-                            </Button>
-                        </ div>
+                        selectedItem.type === 'player' ? (
+                            <div>
+                                <h2 className="text-xl font-bold mb-2">Selected Item</h2>
+                                <p><strong>Selcted Player:</strong> {selectedItem.stats.name}</p>
+                                <p><strong>Strength:</strong> {selectedItem.stats.strength}</p>
+                                <p><strong>Dexterity:</strong> {selectedItem.stats.dexterity}</p>
+                                <p><strong>Constitution:</strong> {selectedItem.stats.constitution}</p>
+                                <p><strong>Intelligence:</strong> {selectedItem.stats.intelligence}</p>
+                                <p><strong>Wisdom:</strong> {selectedItem.stats.wisdom}</p>
+                                <p><strong>Charisma:</strong> {selectedItem.stats.charisma}</p>
+                                <p><strong>Movement Speed:</strong> {selectedItem.stats.movementSpeed}</p>
+                                {!isMoving ? (
+                                    <Button size="sm" onClick={() => setIsMoving(true)}>
+                                        Move
+                                    </Button>
+                                ) : (
+                                    <div className="text-red-600">
+                                        select a location to move to
+                                        <Button size="sm" disabled={true}>
+                                            Move
+                                        </Button>
+                                    </div>
+                                )
+                                }
+                            </ div>
+                        ) : (
+                            <div>
+                                <h2 className="text-xl font-bold mb-2">Selected Item</h2>
+                                <p><strong>Selcted NPC:</strong> {selectedItem.stats.name}</p>
+                            </div>
+                        )
                     ) : (
                         <h2 className="text-xl font-bold mb-2">No Item Selected</h2>
                     )}
@@ -78,8 +95,11 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         {battleMap.grid.map((cols) => (
                                             cols.map((item) => (
                                                 <div key={item.id} className="grid-item aspect-square border border-blue-400 flex items-center justify-center overflow-hidden" onClick={() => handleClick(item)}>
-                                                    {item.stats &&
+                                                    {item.stats?.image ? (
                                                         <img src={item.stats.image} />
+                                                    ) : (
+                                                        <div className="text-gray-400">{item.stats?.name}</div>
+                                                    )
                                                     }
                                                 </div>
                                             ))
