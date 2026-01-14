@@ -52,18 +52,18 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     }
 
     function addPlayer(): void {
-        // open a form in the section to put in stats, when stas are confirmed, select a cell on the grid to place the player
         setIsAddingPlayer(true);
         setisDrawerOpen(false);
-        setIsAddingPlayer(false);
     }
 
     function addNPC(): void {
         setIsAddingNPC(true);
+        setisDrawerOpen(false);
     }
 
     function removeItem(): void {
         setIsRemovingItem(true);
+        setisDrawerOpen(false);
     }
 
     return (
@@ -123,6 +123,21 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 <p><strong>Selcted NPC:</strong> {selectedItem.stats.name}</p>
                             </div>
                         )
+                    ) : isAddingPlayer ? (
+                        <div>
+                            <h2 className="text-xl font-bold mb-2">Add Player</h2>
+                            <p>Enter player stats here</p>
+                        </div>
+                    ) : isAddingNPC ? (
+                        <div>
+                            <h2 className="text-xl font-bold mb-2">Add NPC</h2>
+                            <p>Enter NPC stats here</p>
+                        </div>
+                    ) : isRemovingItem ? (
+                        <div>
+                            <h2 className="text-xl font-bold mb-2">Remove Item</h2>
+                            <p>Click on an item to remove it</p>
+                        </div>
                     ) : (
                         <h2 className="text-xl font-bold mb-2">No Item Selected</h2>
                     )}
