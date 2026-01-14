@@ -1,5 +1,5 @@
 "use client";
-import { buildGrid, swapPositions } from "@/utils/gridUtils";
+import { buildGrid, swapPositions, addPlayerToGrid } from "@/utils/gridUtils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
@@ -22,6 +22,12 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
     const [isMoving, setIsMoving] = useState<boolean>(false);
     const [battleMap, setBattleMap] = useState<grid>(() => buildGrid(props.items, props.dimensions));
+    const [isAddingPlayer, setIsAddingPlayer] = useState<boolean>(false);
+    const [isAddingNPC, setIsAddingNPC] = useState<boolean>(false);
+    const [isRemovingItem, setIsRemovingItem] = useState<boolean>(false);
+
+    const [isDrawerOpen, setisDrawerOpen] = useState(false)
+
 
     const Controls = () => {
         const { resetTransform } = useControls();
@@ -33,6 +39,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     };
 
     function handleClick(item: gridItem): void {
+
         if (isMoving && selectedItem && item.type === 'empty') {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
             setIsMoving(false);
@@ -45,21 +52,24 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     }
 
     function addPlayer(): void {
-        throw new Error("Function not implemented.");
+        // open a form in the section to put in stats, when stas are confirmed, select a cell on the grid to place the player
+        setIsAddingPlayer(true);
+        setisDrawerOpen(false);
+        setIsAddingPlayer(false);
     }
 
     function addNPC(): void {
-        throw new Error("Function not implemented.");
+        setIsAddingNPC(true);
     }
 
     function removeItem(): void {
-        throw new Error("Function not implemented.");
+        setIsRemovingItem(true);
     }
 
     return (
         <main className="h-full w-full flex">
             <section className="w-[25%] border-r border-gray-300">
-                <Drawer>
+                <Drawer open={isDrawerOpen} onOpenChange={setisDrawerOpen}>
                     <DrawerTrigger asChild>
                         <Button>See other tools</Button>
                     </DrawerTrigger>
@@ -71,7 +81,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                             <div className="p-4 pb-0 flex items-center justify-center">
                                 <Button className="w-full m-2" onClick={() => addPlayer()}>Add Player</Button>
                                 <Button className="w-full m-2" onClick={() => addNPC()}>Add NPC</Button>
-                                <Button className="w-full m-2"onClick={() => removeItem()}>Remove Item</Button>
+                                <Button className="w-full m-2" onClick={() => removeItem()}>Remove Item</Button>
                             </div>
                             <DrawerFooter>
                                 <DrawerClose asChild>

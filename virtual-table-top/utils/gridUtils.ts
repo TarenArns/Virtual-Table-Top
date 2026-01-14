@@ -1,3 +1,6 @@
+import type { grid, gridItem } from "@/types/gridTypes";
+
+
 export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }) {
     const newGrid: grid = {
         dimensions: dimensions,
@@ -32,4 +35,18 @@ export function swapPositions(grid: grid, toMove: gridItem, toReplace: gridItem)
     toReplace.position.y = tempY
     toReplace.position.x = tempX
     return newGrid
-}   
+}
+
+export function addPlayerToGrid(targetCell: gridItem, grid: grid): grid {
+    return grid;
+
+}
+
+export function addNPCToGrid(targetCell: gridItem, grid: grid): grid {
+    return grid;
+
+}
+
+export function removeItemFromGrid(targetCell: gridItem, grid: grid): grid {
+    return grid;
+}
