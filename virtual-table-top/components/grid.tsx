@@ -21,7 +21,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
 
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
     const [isMoving, setIsMoving] = useState<boolean>(false);
-    const [battleMap, setBattleMap] = useState<grid>(() => buildGrid(props.items, props.dimensions));
+    const [battleMap, setBattleMap] = useState<grid>(() => buildGrid(props.items, props.dimensions, background.src));
     const [isAddingPlayer, setIsAddingPlayer] = useState<boolean>(false);
     const [isAddingNPC, setIsAddingNPC] = useState<boolean>(false);
     const [isRemovingItem, setIsRemovingItem] = useState<boolean>(false);
@@ -141,8 +141,8 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                             <TransformComponent>
                                 <div className="grid content-start justify-center h-full w-full overflow-hidden"
                                     style={{
-                                        gridTemplateColumns: `repeat(${props.dimensions.columns}, minmax(0, 1fr))`,
-                                        backgroundImage: `url(${background.src})`,
+                                        gridTemplateColumns: `repeat(${battleMap.dimensions.columns}, minmax(0, 1fr))`,
+                                        backgroundImage: `url(${battleMap.backgroundImage})`,
                                         backgroundSize: "100% 100%",
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",

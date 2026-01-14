@@ -4,6 +4,7 @@ import edvard from "../public/brad (edvard sangren).jpg";
 import three from "../public/sam (three).jpg";
 import cheese from "../public/colton (big cheese).jpg";
 import miles from "../public/will (miles dei).jpg";
+import type { playerCharacter, npcCharacter, gridItem } from "@/types/gridTypes";
 
 
 export default function Home() {

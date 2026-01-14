@@ -1,6 +1,7 @@
 type grid = {
     dimensions: { rows: number; columns: number; };
     grid: gridItem[][];
+    backgroundImage: string | undefined;
 };
 
 type gridItem = {

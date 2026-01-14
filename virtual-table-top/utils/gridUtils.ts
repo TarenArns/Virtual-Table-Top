@@ -1,10 +1,11 @@
 import type { grid, gridItem } from "@/types/gridTypes";
 
 
-export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }) {
+export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }, image: string | undefined): grid {
     const newGrid: grid = {
         dimensions: dimensions,
         grid: [[]],
+        backgroundImage: image
     }
     let count = 0
     for (let r = 0; r < newGrid.dimensions.rows; r++) {
