@@ -15,6 +15,19 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
+import {
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel,
+    FieldLegend,
+    FieldSeparator,
+    FieldSet,
+} from "@/components/ui/field"
+
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
@@ -39,8 +52,10 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     };
 
     function handleClick(item: gridItem): void {
-
-        if (isMoving && selectedItem && item.type === 'empty') {
+        if ((isAddingPlayer || isAddingNPC) && item.type === 'empty') {
+            setSelectedItem(item);
+        }
+        else if (isMoving && selectedItem && item.type === 'empty') {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
             setIsMoving(false);
             setSelectedItem(null);
@@ -53,17 +68,26 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
 
     function addPlayer(): void {
         setIsAddingPlayer(true);
+        setIsMoving(false);
+        setSelectedItem(null);
         setisDrawerOpen(false);
     }
 
     function addNPC(): void {
         setIsAddingNPC(true);
+        setIsMoving(false);
+        setSelectedItem(null);
         setisDrawerOpen(false);
+        setIsAddingNPC(false);
+
     }
 
     function removeItem(): void {
         setIsRemovingItem(true);
+        setIsMoving(false);
+        setSelectedItem(null);
         setisDrawerOpen(false);
+        setIsRemovingItem(false);
     }
 
     return (
@@ -125,8 +149,124 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         )
                     ) : isAddingPlayer ? (
                         <div>
-                            <h2 className="text-xl font-bold mb-2">Add Player</h2>
-                            <p>Enter player stats here</p>
+                            <form>
+                                <FieldGroup>
+                                    <FieldSet>
+                                        <FieldLegend>
+                                            Adding New Player
+                                        </FieldLegend>
+                                        <FieldDescription>
+                                            Enter the stats for the player you want to add
+                                        </FieldDescription>
+                                        <Field>
+                                            <FieldLabel htmlFor="player-name">
+                                                Name
+                                            </FieldLabel>
+                                            <Input
+                                                id="player-name"
+                                                placeholder="Hero Man"
+                                                required
+                                            />
+                                        </Field>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <Field>
+                                                <FieldLabel htmlFor="player-strength">
+                                                    Strength
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-strength"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+
+                                            <Field>
+                                                <FieldLabel htmlFor="player-dexterity">
+                                                    Dexterity
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-dexterity"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="player-constitution">
+                                                    Constitution
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-constitution"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="player-intelligence">
+                                                    Intelligence
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-intelligence"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="player-wisdom">
+                                                    Wisdom
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-wisdom"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="player-charisma">
+                                                    Charisma
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-charisma"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+
+                                            <Field>
+                                                <FieldLabel htmlFor="player-armour-class">
+                                                    Armour Class
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-armour-class"
+                                                    placeholder="15"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="player-movement-speed">
+                                                    Movement Speed
+                                                </FieldLabel>
+                                                <Input
+                                                    id="player-movement-speed"
+                                                    placeholder="30"
+                                                    required
+                                                />
+                                            </Field>
+                                        </div>
+                                        {selectedItem ? (
+                                            <p>your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
+                                        ) : (<p>Please select a location on the grid to place the new player, the top left is (0,0)</p>)}
+
+                                        <Field orientation="horizontal">
+                                            <Button type="submit">Submit</Button>
+                                            <Button onClick={() => setIsAddingPlayer(false)} variant="outline" type="button">
+                                                Cancel
+                                            </Button>
+                                        </Field>
+                                    </FieldSet>
+                                </FieldGroup>
+                            </form>
                         </div>
                     ) : isAddingNPC ? (
                         <div>
