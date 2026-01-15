@@ -23,6 +23,11 @@ I am using this as a way to practice my programming skills and therefore will be
 
 ## Getting Started
 
+Navigate to Frontend:
+```bash
+cd virtual-table-top
+```
+
 Install dependencies:
 ```bash
 pnpm install
