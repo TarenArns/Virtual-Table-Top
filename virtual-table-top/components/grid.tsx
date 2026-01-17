@@ -26,8 +26,6 @@ import {
 } from "@/components/ui/field"
 
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
@@ -38,6 +36,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     const [isAddingPlayer, setIsAddingPlayer] = useState<boolean>(false);
     const [isAddingNPC, setIsAddingNPC] = useState<boolean>(false);
     const [isRemovingItem, setIsRemovingItem] = useState<boolean>(false);
+    const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
     const [isDrawerOpen, setisDrawerOpen] = useState(false)
 
@@ -54,6 +53,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     function handleClick(item: gridItem): void {
         if ((isAddingPlayer || isAddingNPC) && item.type === 'empty') {
             setSelectedItem(item);
+            setCanSubmit(true);
         }
         else if (isMoving && selectedItem && item.type === 'empty') {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
@@ -68,9 +68,21 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
 
     function addPlayer(): void {
         setIsAddingPlayer(true);
+        setCanSubmit(false);
         setIsMoving(false);
         setSelectedItem(null);
         setisDrawerOpen(false);
+        console.log(canSubmit)
+    }
+
+    function submitAddPlayer(formData: FormData): void {
+        if (selectedItem) {
+            setBattleMap(addPlayerToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
+            setIsAddingPlayer(false);
+            setSelectedItem(null);
+            setCanSubmit(false);
+            setisDrawerOpen(false);
+        }
     }
 
     function addNPC(): void {
@@ -149,7 +161,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         )
                     ) : isAddingPlayer ? (
                         <div>
-                            <form>
+                            <form action={submitAddPlayer} >
                                 <FieldGroup>
                                     <FieldSet>
                                         <FieldLegend>
@@ -164,6 +176,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                             </FieldLabel>
                                             <Input
                                                 id="player-name"
+                                                name="player-name"
                                                 placeholder="Hero Man"
                                                 required
                                             />
@@ -175,6 +188,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-strength"
+                                                    name="player-strength"
                                                     placeholder="10"
                                                     required
                                                 />
@@ -186,6 +200,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-dexterity"
+                                                    name="player-dexterity"
                                                     placeholder="10"
                                                     required
                                                 />
@@ -196,6 +211,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-constitution"
+                                                    name="player-constitution"
                                                     placeholder="10"
                                                     required
                                                 />
@@ -206,6 +222,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-intelligence"
+                                                    name="player-intelligence"
                                                     placeholder="10"
                                                     required
                                                 />
@@ -216,6 +233,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-wisdom"
+                                                    name="player-wisdom"
                                                     placeholder="10"
                                                     required
                                                 />
@@ -226,6 +244,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-charisma"
+                                                    name="player-charisma"
                                                     placeholder="10"
                                                     required
                                                 />
@@ -239,6 +258,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-armour-class"
+                                                    name="player-armour-class"
                                                     placeholder="15"
                                                     required
                                                 />
@@ -249,17 +269,17 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 </FieldLabel>
                                                 <Input
                                                     id="player-movement-speed"
+                                                    name="player-movement-speed"
                                                     placeholder="30"
                                                     required
                                                 />
                                             </Field>
                                         </div>
                                         {selectedItem ? (
-                                            <p>your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
-                                        ) : (<p>Please select a location on the grid to place the new player, the top left is (0,0)</p>)}
-
+                                            <p>Your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
+                                        ) : (<p><b>Select a location on the grid to place the new player, the top left is (0,0)</b></p>)}
                                         <Field orientation="horizontal">
-                                            <Button type="submit">Submit</Button>
+                                            <Button type="submit" disabled={!canSubmit}>Submit</Button>
                                             <Button onClick={() => setIsAddingPlayer(false)} variant="outline" type="button">
                                                 Cancel
                                             </Button>
@@ -308,7 +328,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 {item.stats?.image ? (
                                                     <img src={item.stats.image} alt={item.stats.name} />
                                                 ) : (
-                                                    <div className="text-black">{item.stats?.name}</div>
+                                                    <div className="text-red-600">{item.stats?.name}</div>
                                                 )
                                                 }
                                             </div>

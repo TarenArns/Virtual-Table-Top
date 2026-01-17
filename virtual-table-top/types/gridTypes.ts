@@ -20,6 +20,7 @@ type playerCharacter = {
     wisdom: number;
     charisma: number;
     movementSpeed: number;
+    armourClass: number;
     image: string | undefined;
 }
 
@@ -33,6 +34,7 @@ type npcCharacter = {
     wisdom: number;
     charisma: number;
     movementSpeed: number;
+    armourClass: number;
     image: string | undefined;
 }
 

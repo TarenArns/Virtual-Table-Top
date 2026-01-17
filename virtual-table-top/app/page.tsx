@@ -10,17 +10,17 @@ import type { playerCharacter, npcCharacter, gridItem } from "@/types/gridTypes"
 export default function Home() {
 
   const players: playerCharacter[] = [
-    { name: "Three", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30, image: three.src },
-    { name: "OJ \"Big Cheese\" Simpson", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30, image: cheese.src },
-    { name: "Edvard Sangren", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30, image: edvard.src },
-    { name: "Miles Dei", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30, image: miles.src },
-    { name: "Blarg", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30, image: blarg.src },
+    { name: "Three", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30,  armourClass: 15, image: three.src },
+    { name: "OJ \"Big Cheese\" Simpson", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30,  armourClass: 15, image: cheese.src },
+    { name: "Edvard Sangren", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30,  armourClass: 15, image: edvard.src },
+    { name: "Miles Dei", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30,  armourClass: 15, image: miles.src },
+    { name: "Blarg", strength: 20, dexterity: 20, constitution: 20, wisdom: 20, intelligence: 20, charisma: 20, movementSpeed: 30, armourClass: 15, image: blarg.src },
   ]
 
   const NPCs: npcCharacter[] = [
-    { name: "Goblin", challengeRating: 0.25, strength: 8, dexterity: 14, constitution: 10, wisdom: 8, intelligence: 10, charisma: 8, movementSpeed: 30, image: undefined },
-    { name: "Orc", challengeRating: 0.5, strength: 16, dexterity: 12, constitution: 16, wisdom: 11, intelligence: 10, charisma: 10, movementSpeed: 30, image: undefined },
-    { name: "Troll", challengeRating: 5, strength: 23, dexterity: 13, constitution: 20, wisdom: 9, intelligence: 7, charisma: 7, movementSpeed: 30, image: undefined },
+    { name: "Goblin", challengeRating: 0.25, strength: 8, dexterity: 14, constitution: 10, wisdom: 8, intelligence: 10, charisma: 8, movementSpeed: 30, armourClass: 15, image: undefined },
+    { name: "Orc", challengeRating: 0.5, strength: 16, dexterity: 12, constitution: 16, wisdom: 11, intelligence: 10, charisma: 10, movementSpeed: 30, armourClass: 15, image: undefined },
+    { name: "Troll", challengeRating: 5, strength: 23, dexterity: 13, constitution: 20, wisdom: 9, intelligence: 7, charisma: 7, movementSpeed: 30, armourClass: 15, image: undefined },
   ]
 
   const items: gridItem[] = [
@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center border border-gray-300">
-      <Grid items={items} dimensions={{ rows: 20, columns: 20 }} />
+      <Grid items={items} dimensions={{ rows: 20, columns:20 }} />
     </div>
 
   );
