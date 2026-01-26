@@ -1,4 +1,4 @@
-import type { grid, gridItem, playerCharacter } from "@/types/gridTypes";
+import type { grid, gridItem, npcCharacter, playerCharacter } from "@/types/gridTypes";
 
 
 export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }, image: string | undefined): grid {
@@ -54,11 +54,11 @@ export function addPlayerToGrid(formData: FormData, grid: grid, xPos: number, yP
         strength: strength,
         dexterity: dexterity,
         constitution: constitution,
-        wisdom: wisdom, 
-        intelligence: intelligence, 
-        charisma: charisma, 
-        movementSpeed: movementSpeed, 
-        armourClass: armourClass, 
+        wisdom: wisdom,
+        intelligence: intelligence,
+        charisma: charisma,
+        movementSpeed: movementSpeed,
+        armourClass: armourClass,
         image: undefined
     }
 
@@ -77,8 +77,44 @@ export function addPlayerToGrid(formData: FormData, grid: grid, xPos: number, yP
 
 }
 
-export function addNPCToGrid(targetCell: gridItem, grid: grid): grid {
-    return grid;
+export function addNPCToGrid(formData: FormData, grid: grid, xPos: number, yPos: number): grid {
+    const name = formData.get('npc-name') as string;
+    const challengeRating = Number(formData.get('npc-challenge-rating'));
+    const strength = Number(formData.get('npc-strength'));
+    const dexterity = Number(formData.get('npc-dexterity'));
+    const constitution = Number(formData.get('npc-constitution'));
+    const intelligence = Number(formData.get('npc-intelligence'));
+    const wisdom = Number(formData.get('npc-wisdom'));
+    const charisma = Number(formData.get('npc-charisma'));
+    const movementSpeed = Number(formData.get('npc-movement-speed'));
+    const armourClass = Number(formData.get('npc-armour-class'));
+
+    const npc: npcCharacter = {
+        name: name,
+        challengeRating: challengeRating,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        wisdom: wisdom,
+        intelligence: intelligence,
+        charisma: charisma,
+        movementSpeed: movementSpeed,
+        armourClass: armourClass,
+        image: undefined
+    }
+
+    const newGrid = grid;
+
+    const newItem: gridItem = {
+        id: 100000,
+        position: { x: xPos, y: yPos },
+        type: 'npc',
+        stats: npc
+    }
+
+    newGrid.grid[yPos][xPos] = newItem;
+
+    return newGrid;
 
 }
 

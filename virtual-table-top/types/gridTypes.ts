@@ -8,7 +8,7 @@ type gridItem = {
     id: number | undefined;
     position: { x: number; y: number; };
     type: 'player' | 'npc' | 'empty';
-    stats: playerCharacter | null;
+    stats: playerCharacter | npcCharacter | null;
 };
 
 type playerCharacter = {

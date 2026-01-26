@@ -1,5 +1,5 @@
 "use client";
-import { buildGrid, swapPositions, addPlayerToGrid } from "@/utils/gridUtils";
+import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid } from "@/utils/gridUtils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
@@ -66,13 +66,12 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
         console.log(selectedItem);
     }
 
-    function addPlayer(): void {
-        setIsAddingPlayer(true);
+    function clickAddPlayer(): void {
         setCanSubmit(false);
         setIsMoving(false);
         setSelectedItem(null);
         setisDrawerOpen(false);
-        console.log(canSubmit)
+        setIsAddingPlayer(true);
     }
 
     function submitAddPlayer(formData: FormData): void {
@@ -85,16 +84,25 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
         }
     }
 
-    function addNPC(): void {
-        setIsAddingNPC(true);
+    function clickAddNPC(): void {
+        setCanSubmit(false);
         setIsMoving(false);
         setSelectedItem(null);
         setisDrawerOpen(false);
-        setIsAddingNPC(false);
-
+        setIsAddingNPC(true);
     }
 
-    function removeItem(): void {
+    function submitAddNPC(formData: FormData): void {
+        if (selectedItem) {
+            setBattleMap(addNPCToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
+            setIsAddingPlayer(false);
+            setSelectedItem(null);
+            setCanSubmit(false);
+            setisDrawerOpen(false);
+        }
+    }
+
+    function clickRemoveItem(): void {
         setIsRemovingItem(true);
         setIsMoving(false);
         setSelectedItem(null);
@@ -115,9 +123,9 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 <DrawerTitle>Tools</DrawerTitle>
                             </DrawerHeader>
                             <div className="p-4 pb-0 flex items-center justify-center">
-                                <Button className="w-full m-2" onClick={() => addPlayer()}>Add Player</Button>
-                                <Button className="w-full m-2" onClick={() => addNPC()}>Add NPC</Button>
-                                <Button className="w-full m-2" onClick={() => removeItem()}>Remove Item</Button>
+                                <Button className="w-full m-2" onClick={() => clickAddPlayer()}>Add Player</Button>
+                                <Button className="w-full m-2" onClick={() => clickAddNPC()}>Add NPC</Button>
+                                <Button className="w-full m-2" onClick={() => clickRemoveItem()}>Remove Item</Button>
                             </div>
                             <DrawerFooter>
                                 <DrawerClose asChild>
@@ -132,7 +140,10 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         selectedItem.type === 'player' || selectedItem.type === 'npc' ? (
                             <div>
                                 <h2 className="text-xl font-bold mb-2">Selected Item</h2>
-                                <p><strong>Selcted Player:</strong> {selectedItem.stats.name}</p>
+                                <p><strong>Selcted Token:</strong> {selectedItem.stats.name}</p>
+                                {'challengeRating' in selectedItem.stats && (
+                                    <p><strong>ChallengeRating:</strong> {selectedItem.stats.challengeRating}</p>
+                                )}
                                 <p><strong>Strength:</strong> {selectedItem.stats.strength}</p>
                                 <p><strong>Dexterity:</strong> {selectedItem.stats.dexterity}</p>
                                 <p><strong>Constitution:</strong> {selectedItem.stats.constitution}</p>
@@ -290,8 +301,143 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         </div>
                     ) : isAddingNPC ? (
                         <div>
-                            <h2 className="text-xl font-bold mb-2">Add NPC</h2>
-                            <p>Enter NPC stats here</p>
+                            <form action={submitAddNPC} >
+                                <FieldGroup>
+                                    <FieldSet>
+                                        <FieldLegend>
+                                            Adding New NPC
+                                        </FieldLegend>
+                                        <FieldDescription>
+                                            Enter the stats for the NPC you want to add
+                                        </FieldDescription>
+                                        <Field>
+                                            <FieldLabel htmlFor="npc-name">
+                                                Name
+                                            </FieldLabel>
+                                            <Input
+                                                id="npc-name"
+                                                name="npc-name"
+                                                placeholder="Hero Man"
+                                                required
+                                            />
+                                        </Field>
+                                        <Field>
+                                            <FieldLabel htmlFor="npc-challenge-rating">
+                                                challenge Rating
+                                            </FieldLabel>
+                                            <Input
+                                                id="npc-challenge-rating"
+                                                name="npc-challenge-rating"
+                                                placeholder="2"
+                                                required
+                                            />
+                                        </Field>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-strength">
+                                                    Strength
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-strength"
+                                                    name="npc-strength"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-dexterity">
+                                                    Dexterity
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-dexterity"
+                                                    name="npc-dexterity"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-constitution">
+                                                    Constitution
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-constitution"
+                                                    name="npc-constitution"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-intelligence">
+                                                    Intelligence
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-intelligence"
+                                                    name="npc-intelligence"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-wisdom">
+                                                    Wisdom
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-wisdom"
+                                                    name="npc-wisdom"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-charisma">
+                                                    Charisma
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-charisma"
+                                                    name="npc-charisma"
+                                                    placeholder="10"
+                                                    required
+                                                />
+                                            </Field>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-armour-class">
+                                                    Armour Class
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-armour-class"
+                                                    name="npc-armour-class"
+                                                    placeholder="15"
+                                                    required
+                                                />
+                                            </Field>
+                                            <Field>
+                                                <FieldLabel htmlFor="npc-movement-speed">
+                                                    Movement Speed
+                                                </FieldLabel>
+                                                <Input
+                                                    id="npc-movement-speed"
+                                                    name="npc-movement-speed"
+                                                    placeholder="30"
+                                                    required
+                                                />
+                                            </Field>
+                                        </div>
+                                        {selectedItem ? (
+                                            <p>Your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
+                                        ) : (<p><b>Select a location on the grid to place the new npc, the top left is (0,0)</b></p>)}
+                                        <Field orientation="horizontal">
+                                            <Button type="submit" disabled={!canSubmit}>Submit</Button>
+                                            <Button onClick={() => setIsAddingPlayer(false)} variant="outline" type="button">
+                                                Cancel
+                                            </Button>
+                                        </Field>
+                                    </FieldSet>
+                                </FieldGroup>
+                            </form>
                         </div>
                     ) : isRemovingItem ? (
                         <div>
