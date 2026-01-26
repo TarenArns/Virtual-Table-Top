@@ -77,6 +77,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     function submitAddPlayer(formData: FormData): void {
         if (selectedItem) {
             setBattleMap(addPlayerToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
+            setIsAddingNPC(false);
             setIsAddingPlayer(false);
             setSelectedItem(null);
             setCanSubmit(false);
@@ -95,6 +96,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     function submitAddNPC(formData: FormData): void {
         if (selectedItem) {
             setBattleMap(addNPCToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
+            setIsAddingNPC(false);
             setIsAddingPlayer(false);
             setSelectedItem(null);
             setCanSubmit(false);
@@ -103,11 +105,12 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     }
 
     function clickRemoveItem(): void {
-        setIsRemovingItem(true);
         setIsMoving(false);
         setSelectedItem(null);
         setisDrawerOpen(false);
-        setIsRemovingItem(false);
+        setIsAddingNPC(false);
+        setIsAddingPlayer(false);
+        setIsRemovingItem(true);
     }
 
     return (
