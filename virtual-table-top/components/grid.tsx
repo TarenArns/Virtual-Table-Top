@@ -1,5 +1,5 @@
 "use client";
-import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid } from "@/utils/gridUtils";
+import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid, removeItemFromGrid } from "@/utils/gridUtils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
@@ -62,6 +62,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
         }
         else if (!isMoving && item.type !== 'empty') {
             setSelectedItem(item);
+            setCanSubmit(true);
         }
         console.log(selectedItem);
     }
@@ -113,6 +114,18 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
         setIsRemovingItem(true);
     }
 
+    function submitRemoveItem(): void {
+        if (selectedItem) {
+            setBattleMap(removeItemFromGrid(battleMap, selectedItem.position.x, selectedItem.position.y));
+            console.log("removed")
+            setIsAddingNPC(false);
+            setIsAddingPlayer(false);
+            setSelectedItem(null);
+            setCanSubmit(false);
+            setisDrawerOpen(false);
+        }
+    }
+
     return (
         <main className="h-full w-full flex">
             <section className="w-[25%] border-r border-gray-300">
@@ -139,8 +152,8 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                     </DrawerContent>
                 </Drawer>
                 <div className="selected-item-info p-4 border-b border-gray-300">
-                    {selectedItem?.stats ? (
-                        selectedItem.type === 'player' || selectedItem.type === 'npc' ? (
+                    {selectedItem?.stats && !isRemovingItem ? (
+                        (selectedItem.type === 'player' || selectedItem.type === 'npc') ? (
                             <div>
                                 <h2 className="text-xl font-bold mb-2">Selected Item</h2>
                                 <p><strong>Selcted Token:</strong> {selectedItem.stats.name}</p>
@@ -294,7 +307,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         ) : (<p><b>Select a location on the grid to place the new player, the top left is (0,0)</b></p>)}
                                         <Field orientation="horizontal">
                                             <Button type="submit" disabled={!canSubmit}>Submit</Button>
-                                            <Button onClick={() => setIsAddingPlayer(false)} variant="outline" type="button">
+                                            <Button onClick={() => setIsAddingNPC(false)} variant="outline" type="button">
                                                 Cancel
                                             </Button>
                                         </Field>
@@ -444,14 +457,24 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         </div>
                     ) : isRemovingItem ? (
                         <div>
-                            <h2 className="text-xl font-bold mb-2">Remove Item</h2>
-                            <p>Click on an item to remove it</p>
+                            Removing Token
+                            {selectedItem ? (
+                                <p>Your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
+                            ) : (<p><b>Select a location on the grid to place the new npc, the top left is (0,0)</b></p>)}
+                            <Field orientation="horizontal">
+                                <Button type="submit" disabled={!canSubmit} onClick={submitRemoveItem}>Submit</Button>
+                                <Button onClick={() => setIsRemovingItem(false)} variant="outline" type="button">
+                                    Cancel
+                                </Button>
+                            </Field>
                         </div>
+
                     ) : (
                         <h2 className="text-xl font-bold mb-2">No Item Selected</h2>
-                    )}
-                </div>
-            </section>
+                    )
+                    }
+                </div >
+            </section >
             <section className="w-[75%]">
                 <div className="border-4 border-gray-300">
                     <TransformWrapper
@@ -489,6 +512,6 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                     </TransformWrapper>
                 </div>
             </section>
-        </main>
+        </main >
     )
 }

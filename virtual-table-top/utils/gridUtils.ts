@@ -118,6 +118,9 @@ export function addNPCToGrid(formData: FormData, grid: grid, xPos: number, yPos:
 
 }
 
-export function removeItemFromGrid(targetCell: gridItem, grid: grid): grid {
-    return grid;
+export function removeItemFromGrid(grid: grid, xPos: number, yPos: number): grid {
+    const newGrid = grid;
+    newGrid.grid[yPos][xPos] = { id: grid.grid[yPos][xPos].id, position: { x: xPos, y: yPos }, type: 'empty', stats: null };
+
+    return newGrid;
 }
