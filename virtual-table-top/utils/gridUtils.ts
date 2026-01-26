@@ -65,7 +65,7 @@ export function addPlayerToGrid(formData: FormData, grid: grid, xPos: number, yP
     const newGrid = grid;
 
     const newItem: gridItem = {
-        id: 100000,
+        id: grid.grid[yPos][xPos].id,
         position: { x: xPos, y: yPos },
         type: 'player',
         stats: player
@@ -106,7 +106,7 @@ export function addNPCToGrid(formData: FormData, grid: grid, xPos: number, yPos:
     const newGrid = grid;
 
     const newItem: gridItem = {
-        id: 100000,
+        id: grid.grid[yPos][xPos].id,
         position: { x: xPos, y: yPos },
         type: 'npc',
         stats: npc
