@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "grid/utils/gridUtils.tx"  ],
+, "features/grid/utils/gridUtils.tx"  ],
   "exclude": ["node_modules"]
 }

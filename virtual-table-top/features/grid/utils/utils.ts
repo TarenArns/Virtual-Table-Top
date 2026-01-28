@@ -1,4 +1,4 @@
-import type { grid, gridItem, npcCharacter, playerCharacter } from "@/grid/types/gridTypes";
+import type { grid, gridItem, npcCharacter, playerCharacter } from "@/features/grid/types/types";
 
 
 export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }, image: string | undefined): grid {

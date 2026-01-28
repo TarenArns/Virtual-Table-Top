@@ -1,11 +1,11 @@
 "use client";
-import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid, removeItemFromGrid } from "@/grid/utils/gridUtils";
+import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid, removeItemFromGrid } from "@/features/grid/utils/utils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../common/ui/button";
+import { Button } from "../../../common/ui/button";
 import background from "../public/Background.jpg";
-import type { gridItem, grid } from "@/grid/types/gridTypes";
+import type { gridItem, grid } from "@/features/grid/types/types";
 import {
     Drawer,
     DrawerClose,
