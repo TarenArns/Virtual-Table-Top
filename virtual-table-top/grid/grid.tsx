@@ -1,11 +1,11 @@
 "use client";
-import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid, removeItemFromGrid } from "@/utils/gridUtils";
+import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid, removeItemFromGrid } from "@/grid/utils/gridUtils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../common/ui/button";
 import background from "../public/Background.jpg";
-import type { gridItem, grid } from "@/types/gridTypes";
+import type { gridItem, grid } from "@/grid/types/gridTypes";
 import {
     Drawer,
     DrawerClose,
@@ -14,7 +14,7 @@ import {
     DrawerHeader,
     DrawerTitle,
     DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/common/ui/drawer"
 import {
     Field,
     FieldDescription,
@@ -23,9 +23,9 @@ import {
     FieldLegend,
     FieldSeparator,
     FieldSet,
-} from "@/components/ui/field"
+} from "@/common/ui/field"
 
-import { Input } from "@/components/ui/input"
+import { Input } from "@/common/ui/input"
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {

@@ -1,10 +1,10 @@
-import Grid from "@/components/grid";
+import Grid from "@/grid/grid";
 import blarg from "../public/Blarg.png";
 import edvard from "../public/brad (edvard sangren).jpg";
 import three from "../public/sam (three).jpg";
 import cheese from "../public/colton (big cheese).jpg";
 import miles from "../public/will (miles dei).jpg";
-import type { playerCharacter, npcCharacter, gridItem } from "@/types/gridTypes";
+import type { playerCharacter, npcCharacter, gridItem } from "@/grid/types/gridTypes";
 
 
 export default function Home() {
