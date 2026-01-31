@@ -38,4 +38,12 @@ type npcCharacter = {
     image: string | undefined;
 }
 
-export type { grid, gridItem, playerCharacter, npcCharacter };
+type GridMode =
+  | "idle"
+  | "moving"
+  | "addingPlayer"
+  | "addingNPC"
+  | "removing";
+
+
+export type { grid, gridItem, playerCharacter, npcCharacter, GridMode };

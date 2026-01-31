@@ -5,7 +5,7 @@ import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/common/ui/button";
 import background from "@/public/Background.jpg";
-import type { gridItem, grid } from "@/features/grid/types/types";
+import type { gridItem, grid, GridMode } from "@/features/grid/types/types";
 import {
     Drawer,
     DrawerClose,
@@ -30,11 +30,8 @@ import { Input } from "@/common/ui/input"
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
 
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
-    const [isMoving, setIsMoving] = useState<boolean>(false);
+    const [mode, setMode] = useState<GridMode>("idle");
     const [battleMap, setBattleMap] = useState<grid>(() => buildGrid(props.items, props.dimensions, background.src));
-    const [isAddingPlayer, setIsAddingPlayer] = useState<boolean>(false);
-    const [isAddingNPC, setIsAddingNPC] = useState<boolean>(false);
-    const [isRemovingItem, setIsRemovingItem] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
     const [isDrawerOpen, setisDrawerOpen] = useState(false)
@@ -50,16 +47,16 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     };
 
     function handleClick(item: gridItem): void {
-        if ((isAddingPlayer || isAddingNPC) && item.type === 'empty') {
+        if ((mode === "addingPlayer" || mode === "addingNPC") && item.type === 'empty') {
             setSelectedItem(item);
             setCanSubmit(true);
         }
-        else if (isMoving && selectedItem && item.type === 'empty') {
+        else if (mode === "moving" && selectedItem && item.type === 'empty') {
             setBattleMap(swapPositions(battleMap, selectedItem, item));
-            setIsMoving(false);
+            setMode("idle");
             setSelectedItem(null);
         }
-        else if (!isMoving && item.type !== 'empty') {
+        else if (mode !== "moving" && item.type !== 'empty') {
             setSelectedItem(item);
             setCanSubmit(true);
         }
@@ -67,18 +64,15 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     }
 
     function clickAddPlayer(): void {
-        setCanSubmit(false);
-        setIsMoving(false);
         setSelectedItem(null);
         setisDrawerOpen(false);
-        setIsAddingPlayer(true);
+        setMode("addingPlayer");
     }
 
     function submitAddPlayer(formData: FormData): void {
         if (selectedItem) {
             setBattleMap(addPlayerToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
-            setIsAddingNPC(false);
-            setIsAddingPlayer(false);
+            setMode("idle");
             setSelectedItem(null);
             setCanSubmit(false);
             setisDrawerOpen(false);
@@ -86,18 +80,15 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     }
 
     function clickAddNPC(): void {
-        setCanSubmit(false);
-        setIsMoving(false);
         setSelectedItem(null);
         setisDrawerOpen(false);
-        setIsAddingNPC(true);
+        setMode("addingNPC");
     }
 
     function submitAddNPC(formData: FormData): void {
         if (selectedItem) {
             setBattleMap(addNPCToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
-            setIsAddingNPC(false);
-            setIsAddingPlayer(false);
+            setMode("idle");
             setSelectedItem(null);
             setCanSubmit(false);
             setisDrawerOpen(false);
@@ -105,20 +96,15 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     }
 
     function clickRemoveItem(): void {
-        setIsMoving(false);
         setSelectedItem(null);
         setisDrawerOpen(false);
-        setIsAddingNPC(false);
-        setIsAddingPlayer(false);
-        setIsRemovingItem(true);
+        setMode("removing");
     }
 
     function submitRemoveItem(): void {
         if (selectedItem) {
             setBattleMap(removeItemFromGrid(battleMap, selectedItem.position.x, selectedItem.position.y));
-            console.log("removed")
-            setIsAddingNPC(false);
-            setIsAddingPlayer(false);
+            setMode("idle");
             setSelectedItem(null);
             setCanSubmit(false);
             setisDrawerOpen(false);
@@ -151,7 +137,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                     </DrawerContent>
                 </Drawer>
                 <div className="selected-item-info p-4 border-b border-gray-300">
-                    {selectedItem?.stats && !isRemovingItem ? (
+                    {selectedItem?.stats && (mode !== "removing") ? (
                         (selectedItem.type === 'player' || selectedItem.type === 'npc') ? (
                             <div>
                                 <h2 className="text-xl font-bold mb-2">Selected Item</h2>
@@ -166,8 +152,8 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 <p><strong>Wisdom:</strong> {selectedItem.stats.wisdom}</p>
                                 <p><strong>Charisma:</strong> {selectedItem.stats.charisma}</p>
                                 <p><strong>Movement Speed:</strong> {selectedItem.stats.movementSpeed}</p>
-                                {!isMoving ? (
-                                    <Button size="sm" onClick={() => setIsMoving(true)}>
+                                {(mode !== "moving") ? (
+                                    <Button size="sm" onClick={() => setMode("moving")}>
                                         Move
                                     </Button>
                                 ) : (
@@ -185,7 +171,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 <p><strong>Selcted NPC:</strong> {selectedItem.stats.name}</p>
                             </div>
                         )
-                    ) : isAddingPlayer ? (
+                    ) : (mode === "addingPlayer") ? (
                         <div>
                             <form action={submitAddPlayer} >
                                 <FieldGroup>
@@ -306,7 +292,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         ) : (<p><b>Select a location on the grid to place the new player, the top left is (0,0)</b></p>)}
                                         <Field orientation="horizontal">
                                             <Button type="submit" disabled={!canSubmit}>Submit</Button>
-                                            <Button onClick={() => setIsAddingNPC(false)} variant="outline" type="button">
+                                            <Button onClick={() => setMode("idle")} variant="outline" type="button">
                                                 Cancel
                                             </Button>
                                         </Field>
@@ -314,7 +300,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 </FieldGroup>
                             </form>
                         </div>
-                    ) : isAddingNPC ? (
+                    ) : mode === "addingNPC" ? (
                         <div>
                             <form action={submitAddNPC} >
                                 <FieldGroup>
@@ -446,7 +432,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         ) : (<p><b>Select a location on the grid to place the new npc, the top left is (0,0)</b></p>)}
                                         <Field orientation="horizontal">
                                             <Button type="submit" disabled={!canSubmit}>Submit</Button>
-                                            <Button onClick={() => setIsAddingPlayer(false)} variant="outline" type="button">
+                                            <Button onClick={() => setMode("idle")} variant="outline" type="button">
                                                 Cancel
                                             </Button>
                                         </Field>
@@ -454,7 +440,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 </FieldGroup>
                             </form>
                         </div>
-                    ) : isRemovingItem ? (
+                    ) : mode === "removing" ? (
                         <div>
                             Removing Token
                             {selectedItem ? (
@@ -462,7 +448,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                             ) : (<p><b>Select a location on the grid to place the new npc, the top left is (0,0)</b></p>)}
                             <Field orientation="horizontal">
                                 <Button type="submit" disabled={!canSubmit} onClick={submitRemoveItem}>Submit</Button>
-                                <Button onClick={() => setIsRemovingItem(false)} variant="outline" type="button">
+                                <Button onClick={() => setMode("idle")} variant="outline" type="button">
                                     Cancel
                                 </Button>
                             </Field>
