@@ -79,6 +79,8 @@ export function useGridState(items: gridItem[], dimensions: { rows: number; colu
     }, []);
 
     return {
+        setMode,
+        setisDrawerOpen,
         battleMap,
         mode,
         canSubmit,

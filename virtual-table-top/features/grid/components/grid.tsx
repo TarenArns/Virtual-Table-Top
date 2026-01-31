@@ -23,6 +23,7 @@ import {
     FieldLegend,
     FieldSet,
 } from "@/common/ui/field"
+import { useGridState } from "@/features/grid/hooks/gridState";
 
 import { Input } from "@/common/ui/input"
 import GridCell from "./gridCell";
@@ -30,18 +31,7 @@ import GridCell from "./gridCell";
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
 
-    const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
-    const [mode, setMode] = useState<gridMode>("idle");
-
-    const [battleMap, dispatch] = useReducer(
-        gridReducer,
-        buildGrid(props.items, props.dimensions, background.src)
-    );
-
-    const [canSubmit, setCanSubmit] = useState<boolean>(false);
-
-    const [isDrawerOpen, setisDrawerOpen] = useState(false)
-
+    const gridState = useGridState(props.items, props.dimensions, background.src);
 
     const Controls = () => {
         const { resetTransform } = useControls();
@@ -52,85 +42,22 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
         );
     };
 
-    const handleGridClick = useCallback((item: gridItem) => {
-        if ((mode === "addingPlayer" || mode === "addingNPC") && item.type === 'empty') {
-            setSelectedItem(item);
-            setCanSubmit(true);
-        }
-        else if (mode === "moving" && selectedItem && item.type === 'empty') {
-            dispatch({ type: "MOVE_ITEM", from: selectedItem, to: item });
-            setMode("idle");
-            setSelectedItem(null);
-        }
-        else if (mode !== "moving" && item.type !== 'empty') {
-            setSelectedItem(item);
-            setCanSubmit(true);
-        }
-        console.log(selectedItem);
-    }, [selectedItem, mode]);
-
     const gridCells = useMemo(() => {
-        return battleMap.grid.flat().map((item) => (
+        return gridState.battleMap.grid.flat().map((item) => (
             <GridCell
                 key={item.id}
                 item={item}
-                onClick={handleGridClick}
+                onClick={gridState.handleGridClick}
             />
         ));
-    }, [battleMap.grid, handleGridClick]);
+    }, [gridState.battleMap.grid, gridState.handleGridClick]);
 
-    function clickAddPlayer(): void {
-        setSelectedItem(null);
-        setisDrawerOpen(false);
-        setMode("addingPlayer");
-    }
 
-    function submitAddPlayer(formData: FormData): void {
-        if (selectedItem) {
-            dispatch({ type: "ADD_PLAYER", formData: formData, x: selectedItem.position.x, y: selectedItem.position.y });
-            setMode("idle");
-            setSelectedItem(null);
-            setCanSubmit(false);
-            setisDrawerOpen(false);
-        }
-    }
-
-    function clickAddNPC(): void {
-        setSelectedItem(null);
-        setisDrawerOpen(false);
-        setMode("addingNPC");
-    }
-
-    function submitAddNPC(formData: FormData): void {
-        if (selectedItem) {
-            dispatch({ type: "ADD_NPC", formData: formData, x: selectedItem.position.x, y: selectedItem.position.y });
-            setMode("idle");
-            setSelectedItem(null);
-            setCanSubmit(false);
-            setisDrawerOpen(false);
-        }
-    }
-
-    function clickRemoveItem(): void {
-        setSelectedItem(null);
-        setisDrawerOpen(false);
-        setMode("removing");
-    }
-
-    function submitRemoveItem(): void {
-        if (selectedItem) {
-            dispatch({ type: "REMOVE_ITEM", x: selectedItem.position.x, y: selectedItem.position.y });
-            setMode("idle");
-            setSelectedItem(null);
-            setCanSubmit(false);
-            setisDrawerOpen(false);
-        }
-    }
 
     return (
         <main className="h-full w-full flex">
             <section className="w-[25%] border-r border-gray-300">
-                <Drawer open={isDrawerOpen} onOpenChange={setisDrawerOpen}>
+                <Drawer open={gridState.isDrawerOpen} onOpenChange={gridState.setisDrawerOpen}>
                     <DrawerTrigger asChild>
                         <Button>See other tools</Button>
                     </DrawerTrigger>
@@ -140,9 +67,9 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 <DrawerTitle>Tools</DrawerTitle>
                             </DrawerHeader>
                             <div className="p-4 pb-0 flex items-center justify-center">
-                                <Button className="w-full m-2" onClick={() => clickAddPlayer()}>Add Player</Button>
-                                <Button className="w-full m-2" onClick={() => clickAddNPC()}>Add NPC</Button>
-                                <Button className="w-full m-2" onClick={() => clickRemoveItem()}>Remove Item</Button>
+                                <Button className="w-full m-2" onClick={() => gridState.clickAddPlayer()}>Add Player</Button>
+                                <Button className="w-full m-2" onClick={() => gridState.clickAddNPC()}>Add NPC</Button>
+                                <Button className="w-full m-2" onClick={() => gridState.clickRemoveItem()}>Remove Item</Button>
                             </div>
                             <DrawerFooter>
                                 <DrawerClose asChild>
@@ -153,23 +80,23 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                     </DrawerContent>
                 </Drawer>
                 <div className="selected-item-info p-4 border-b border-gray-300">
-                    {selectedItem?.stats && (mode !== "removing") ? (
-                        (selectedItem.type === 'player' || selectedItem.type === 'npc') ? (
+                    {gridState.selectedItem?.stats && (gridState.mode !== "removing") ? (
+                        (gridState.selectedItem.type === 'player' || gridState.selectedItem.type === 'npc') ? (
                             <div>
                                 <h2 className="text-xl font-bold mb-2">Selected Item</h2>
-                                <p><strong>Selcted Token:</strong> {selectedItem.stats.name}</p>
-                                {'challengeRating' in selectedItem.stats && (
-                                    <p><strong>ChallengeRating:</strong> {selectedItem.stats.challengeRating}</p>
+                                <p><strong>Selcted Token:</strong> {gridState.selectedItem.stats.name}</p>
+                                {'challengeRating' in gridState.selectedItem.stats && (
+                                    <p><strong>ChallengeRating:</strong> {gridState.selectedItem.stats.challengeRating}</p>
                                 )}
-                                <p><strong>Strength:</strong> {selectedItem.stats.strength}</p>
-                                <p><strong>Dexterity:</strong> {selectedItem.stats.dexterity}</p>
-                                <p><strong>Constitution:</strong> {selectedItem.stats.constitution}</p>
-                                <p><strong>Intelligence:</strong> {selectedItem.stats.intelligence}</p>
-                                <p><strong>Wisdom:</strong> {selectedItem.stats.wisdom}</p>
-                                <p><strong>Charisma:</strong> {selectedItem.stats.charisma}</p>
-                                <p><strong>Movement Speed:</strong> {selectedItem.stats.movementSpeed}</p>
-                                {(mode !== "moving") ? (
-                                    <Button size="sm" onClick={() => setMode("moving")}>
+                                <p><strong>Strength:</strong> {gridState.selectedItem.stats.strength}</p>
+                                <p><strong>Dexterity:</strong> {gridState.selectedItem.stats.dexterity}</p>
+                                <p><strong>Constitution:</strong> {gridState.selectedItem.stats.constitution}</p>
+                                <p><strong>Intelligence:</strong> {gridState.selectedItem.stats.intelligence}</p>
+                                <p><strong>Wisdom:</strong> {gridState.selectedItem.stats.wisdom}</p>
+                                <p><strong>Charisma:</strong> {gridState.selectedItem.stats.charisma}</p>
+                                <p><strong>Movement Speed:</strong> {gridState.selectedItem.stats.movementSpeed}</p>
+                                {(gridState.mode !== "moving") ? (
+                                    <Button size="sm" onClick={() => gridState.setMode("moving")}>
                                         Move
                                     </Button>
                                 ) : (
@@ -184,12 +111,12 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                         ) : (
                             <div>
                                 <h2 className="text-xl font-bold mb-2">Selected Item</h2>
-                                <p><strong>Selcted NPC:</strong> {selectedItem.stats.name}</p>
+                                <p><strong>Selcted NPC:</strong> {gridState.selectedItem.stats.name}</p>
                             </div>
                         )
-                    ) : (mode === "addingPlayer") ? (
+                    ) : (gridState.mode === "addingPlayer") ? (
                         <div>
-                            <form action={submitAddPlayer} >
+                            <form action={gridState.submitAddPlayer} >
                                 <FieldGroup>
                                     <FieldSet>
                                         <FieldLegend>
@@ -303,12 +230,12 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 />
                                             </Field>
                                         </div>
-                                        {selectedItem ? (
-                                            <p>Your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
+                                        {gridState.selectedItem ? (
+                                            <p>Your selected location is <b>X: {gridState.selectedItem.position.x} Y: {gridState.selectedItem.position.y}</b> such that the top left is (0,0)</p>
                                         ) : (<p><b>Select a location on the grid to place the new player, the top left is (0,0)</b></p>)}
                                         <Field orientation="horizontal">
-                                            <Button type="submit" disabled={!canSubmit}>Submit</Button>
-                                            <Button onClick={() => setMode("idle")} variant="outline" type="button">
+                                            <Button type="submit" disabled={!gridState.canSubmit}>Submit</Button>
+                                            <Button onClick={() => gridState.setMode("idle")} variant="outline" type="button">
                                                 Cancel
                                             </Button>
                                         </Field>
@@ -316,9 +243,9 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 </FieldGroup>
                             </form>
                         </div>
-                    ) : mode === "addingNPC" ? (
+                    ) : gridState.mode === "addingNPC" ? (
                         <div>
-                            <form action={submitAddNPC} >
+                            <form action={gridState.submitAddNPC} >
                                 <FieldGroup>
                                     <FieldSet>
                                         <FieldLegend>
@@ -443,12 +370,12 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                                 />
                                             </Field>
                                         </div>
-                                        {selectedItem ? (
-                                            <p>Your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
+                                        {gridState.selectedItem ? (
+                                            <p>Your selected location is <b>X: {gridState.selectedItem.position.x} Y: {gridState.selectedItem.position.y}</b> such that the top left is (0,0)</p>
                                         ) : (<p><b>Select a location on the grid to place the new npc, the top left is (0,0)</b></p>)}
                                         <Field orientation="horizontal">
-                                            <Button type="submit" disabled={!canSubmit}>Submit</Button>
-                                            <Button onClick={() => setMode("idle")} variant="outline" type="button">
+                                            <Button type="submit" disabled={!gridState.canSubmit}>Submit</Button>
+                                            <Button onClick={() => gridState.setMode("idle")} variant="outline" type="button">
                                                 Cancel
                                             </Button>
                                         </Field>
@@ -456,15 +383,15 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                 </FieldGroup>
                             </form>
                         </div>
-                    ) : mode === "removing" ? (
+                    ) : gridState.mode === "removing" ? (
                         <div>
                             Removing Token
-                            {selectedItem ? (
-                                <p>Your selected location is <b>X: {selectedItem.position.x} Y: {selectedItem.position.y}</b> such that the top left is (0,0)</p>
+                            {gridState.selectedItem ? (
+                                <p>Your selected location is <b>X: {gridState.selectedItem.position.x} Y: {gridState.selectedItem.position.y}</b> such that the top left is (0,0)</p>
                             ) : (<p><b>Select a location on the grid to place the new npc, the top left is (0,0)</b></p>)}
                             <Field orientation="horizontal">
-                                <Button type="submit" disabled={!canSubmit} onClick={submitRemoveItem}>Submit</Button>
-                                <Button onClick={() => setMode("idle")} variant="outline" type="button">
+                                <Button type="submit" disabled={!gridState.canSubmit} onClick={gridState.submitRemoveItem}>Submit</Button>
+                                <Button onClick={() => gridState.setMode("idle")} variant="outline" type="button">
                                     Cancel
                                 </Button>
                             </Field>
@@ -489,8 +416,8 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                             <TransformComponent>
                                 <div className="grid content-start justify-center h-full w-full overflow-hidden"
                                     style={{
-                                        gridTemplateColumns: `repeat(${battleMap.dimensions.columns}, minmax(0, 1fr))`,
-                                        backgroundImage: `url(${battleMap.backgroundImage})`,
+                                        gridTemplateColumns: `repeat(${gridState.battleMap.dimensions.columns}, minmax(0, 1fr))`,
+                                        backgroundImage: `url(${gridState.battleMap.backgroundImage})`,
                                         backgroundSize: "100% 100%",
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
