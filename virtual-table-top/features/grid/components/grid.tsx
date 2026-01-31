@@ -3,8 +3,8 @@ import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid, removeItemFrom
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../../../common/ui/button";
-import background from "../public/Background.jpg";
+import { Button } from "@/common/ui/button";
+import background from "@/public/Background.jpg";
 import type { gridItem, grid } from "@/features/grid/types/types";
 import {
     Drawer,
@@ -21,7 +21,6 @@ import {
     FieldGroup,
     FieldLabel,
     FieldLegend,
-    FieldSeparator,
     FieldSet,
 } from "@/common/ui/field"
 

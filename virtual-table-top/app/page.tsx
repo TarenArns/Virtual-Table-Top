@@ -1,9 +1,9 @@
 import Grid from "@/features/grid/components/grid";
-import blarg from "../public/Blarg.png";
-import edvard from "../public/brad (edvard sangren).jpg";
-import three from "../public/sam (three).jpg";
-import cheese from "../public/colton (big cheese).jpg";
-import miles from "../public/will (miles dei).jpg";
+import blarg from "@/public/Blarg.png";
+import edvard from "@/public/brad (edvard sangren).jpg";
+import three from "@/public/sam (three).jpg";
+import cheese from "@/public/colton (big cheese).jpg";
+import miles from "@/public/will (miles dei).jpg";
 import type { playerCharacter, npcCharacter, gridItem } from "@/features/grid/types/types";
 
 
