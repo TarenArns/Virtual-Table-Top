@@ -1,11 +1,11 @@
 "use client";
-import { buildGrid, swapPositions, addPlayerToGrid, addNPCToGrid, removeItemFromGrid } from "@/features/grid/utils/utils";
+import { buildGrid, gridReducer } from "@/features/grid/utils/utils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { Button } from "@/common/ui/button";
 import background from "@/public/Background.jpg";
-import type { gridItem, grid, GridMode } from "@/features/grid/types/types";
+import type { gridItem, grid, gridMode } from "@/features/grid/types/types";
 import {
     Drawer,
     DrawerClose,
@@ -30,8 +30,13 @@ import { Input } from "@/common/ui/input"
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
 
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
-    const [mode, setMode] = useState<GridMode>("idle");
-    const [battleMap, setBattleMap] = useState<grid>(() => buildGrid(props.items, props.dimensions, background.src));
+    const [mode, setMode] = useState<gridMode>("idle");
+
+    const [battleMap, dispatch] = useReducer(
+        gridReducer,
+        buildGrid(props.items, props.dimensions, background.src)
+    );
+
     const [canSubmit, setCanSubmit] = useState<boolean>(false);
 
     const [isDrawerOpen, setisDrawerOpen] = useState(false)
@@ -52,7 +57,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
             setCanSubmit(true);
         }
         else if (mode === "moving" && selectedItem && item.type === 'empty') {
-            setBattleMap(swapPositions(battleMap, selectedItem, item));
+            dispatch({ type: "MOVE_ITEM", from: selectedItem, to: item });
             setMode("idle");
             setSelectedItem(null);
         }
@@ -71,7 +76,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
 
     function submitAddPlayer(formData: FormData): void {
         if (selectedItem) {
-            setBattleMap(addPlayerToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
+            dispatch({ type: "ADD_PLAYER", formData: formData, x: selectedItem.position.x, y: selectedItem.position.y });
             setMode("idle");
             setSelectedItem(null);
             setCanSubmit(false);
@@ -87,7 +92,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
 
     function submitAddNPC(formData: FormData): void {
         if (selectedItem) {
-            setBattleMap(addNPCToGrid(formData, battleMap, selectedItem.position.x, selectedItem.position.y));
+            dispatch({ type: "ADD_NPC", formData: formData, x: selectedItem.position.x, y: selectedItem.position.y });
             setMode("idle");
             setSelectedItem(null);
             setCanSubmit(false);
@@ -103,7 +108,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
 
     function submitRemoveItem(): void {
         if (selectedItem) {
-            setBattleMap(removeItemFromGrid(battleMap, selectedItem.position.x, selectedItem.position.y));
+            dispatch({ type: "REMOVE_ITEM", x: selectedItem.position.x, y: selectedItem.position.y });
             setMode("idle");
             setSelectedItem(null);
             setCanSubmit(false);

@@ -1,4 +1,4 @@
-import type { grid, gridItem, npcCharacter, playerCharacter } from "@/features/grid/types/types";
+import type { grid, gridAction, gridItem, npcCharacter, playerCharacter } from "@/features/grid/types/types";
 
 
 export function buildGrid(items: gridItem[], dimensions: { rows: number; columns: number; }, image: string | undefined): grid {
@@ -123,4 +123,41 @@ export function removeItemFromGrid(grid: grid, xPos: number, yPos: number): grid
     newGrid.grid[yPos][xPos] = { id: grid.grid[yPos][xPos].id, position: { x: xPos, y: yPos }, type: 'empty', stats: null };
 
     return newGrid;
+}
+
+export function gridReducer(state: grid, action: gridAction): grid {
+  switch (action.type) {
+    case "ADD_PLAYER":
+      return addPlayerToGrid(
+        action.formData,
+        state,
+        action.x,
+        action.y
+      );
+
+    case "ADD_NPC":
+      return addNPCToGrid(
+        action.formData,
+        state,
+        action.x,
+        action.y
+      );
+
+    case "MOVE_ITEM":
+      return swapPositions(
+        state,
+        action.from,
+        action.to
+      );
+
+    case "REMOVE_ITEM":
+      return removeItemFromGrid(
+        state,
+        action.x,
+        action.y
+      );
+
+    default:
+      return state;
+  }
 }
