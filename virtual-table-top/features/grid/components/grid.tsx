@@ -2,7 +2,7 @@
 import { buildGrid, gridReducer } from "@/features/grid/utils/utils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
-import { useReducer, useState } from "react";
+import { useReducer, useState, useMemo, useCallback } from "react";
 import { Button } from "@/common/ui/button";
 import background from "@/public/Background.jpg";
 import type { gridItem, grid, gridMode } from "@/features/grid/types/types";
@@ -25,6 +25,7 @@ import {
 } from "@/common/ui/field"
 
 import { Input } from "@/common/ui/input"
+import GridCell from "./gridCell";
 
 
 export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
@@ -51,7 +52,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
         );
     };
 
-    function handleClick(item: gridItem): void {
+    const handleGridClick = useCallback((item: gridItem) => {
         if ((mode === "addingPlayer" || mode === "addingNPC") && item.type === 'empty') {
             setSelectedItem(item);
             setCanSubmit(true);
@@ -66,7 +67,17 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
             setCanSubmit(true);
         }
         console.log(selectedItem);
-    }
+    }, [selectedItem, mode]);
+
+    const gridCells = useMemo(() => {
+        return battleMap.grid.flat().map((item) => (
+            <GridCell
+                key={item.id}
+                item={item}
+                onClick={handleGridClick}
+            />
+        ));
+    }, [battleMap.grid, handleGridClick]);
 
     function clickAddPlayer(): void {
         setSelectedItem(null);
@@ -484,18 +495,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                     }}>
-                                    {battleMap.grid.map((cols) => (
-                                        cols.map((item) => (
-                                            <div key={item.id} className="grid-item aspect-square border border-blue-400 flex items-center justify-center overflow-hidden" onClick={() => handleClick(item)}>
-                                                {item.stats?.image ? (
-                                                    <img src={item.stats.image} alt={item.stats.name} />
-                                                ) : (
-                                                    <div className="text-red-600">{item.stats?.name}</div>
-                                                )
-                                                }
-                                            </div>
-                                        ))
-                                    ))}
+                                    {gridCells}
                                 </div>
                             </TransformComponent>
                         </div>
