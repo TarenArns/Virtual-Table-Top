@@ -7,9 +7,12 @@ type Props = {
 };
 
 function GridCell({ item, onClick }: Props) {
+  const hasNoImage = item.type !== "empty" && !item.stats?.image;
+
   return (
+
     <div
-      className="grid-item aspect-square border border-blue-400 flex items-center justify-center overflow-hidden"
+      className={`grid-item aspect-square border flex items-center justify-center overflow-hidden ${hasNoImage ? "border-red-600 ring-4 ring-red-600 z-100" : "border-blue-400"}`}
       onClick={() => onClick(item)}
     >
       {item.stats?.image ? (
