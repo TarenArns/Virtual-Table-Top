@@ -1,6 +1,7 @@
 import { useState, useReducer, useCallback } from "react";
 import { gridItem, gridMode } from "../types/types";
 import { gridReducer, buildGrid } from "../utils/utils";
+import { cn } from "@/lib/utils";
 
 export function useGridState(items: gridItem[], dimensions: { rows: number; columns: number }, src: string) {
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
@@ -27,6 +28,10 @@ export function useGridState(items: gridItem[], dimensions: { rows: number; colu
             setSelectedItem(item);
             setCanSubmit(true);
         }
+        else if(mode === "removing" && item.type !== 'empty') {
+            setSelectedItem(item);
+            setCanSubmit(true);
+        }
         console.log(selectedItem);
     }, [selectedItem, mode]);
 
@@ -34,7 +39,7 @@ export function useGridState(items: gridItem[], dimensions: { rows: number; colu
         setSelectedItem(null);
         setisDrawerOpen(false);
         setMode("addingPlayer");
-    }, []);
+    }, [selectedItem, mode]);
 
     const submitAddPlayer = useCallback((formData: FormData) => {
         if (selectedItem) {
@@ -44,13 +49,13 @@ export function useGridState(items: gridItem[], dimensions: { rows: number; colu
             setCanSubmit(false);
             setisDrawerOpen(false);
         }
-    }, []);
+    }, [selectedItem, mode]);
 
     const clickAddNPC = useCallback(() => {
         setSelectedItem(null);
         setisDrawerOpen(false);
         setMode("addingNPC");
-    }, []);
+    }, [selectedItem, mode]);
 
     const submitAddNPC = useCallback((formData: FormData) => {
         if (selectedItem) {
@@ -60,23 +65,26 @@ export function useGridState(items: gridItem[], dimensions: { rows: number; colu
             setCanSubmit(false);
             setisDrawerOpen(false);
         }
-    }, []);
+    }, [selectedItem, mode]);
 
     const clickRemoveItem = useCallback(() => {
         setSelectedItem(null);
         setisDrawerOpen(false);
         setMode("removing");
-    }, []);
+    }, [selectedItem, mode]);
 
     const submitRemoveItem = useCallback(() => {
+        console.log("trying to remove item");
+        console.log(selectedItem)
         if (selectedItem) {
+            console.log("removing item");
             dispatch({ type: "REMOVE_ITEM", x: selectedItem.position.x, y: selectedItem.position.y });
             setMode("idle");
             setSelectedItem(null);
             setCanSubmit(false);
             setisDrawerOpen(false);
         }
-    }, []);
+    }, [selectedItem, mode]);
 
     return {
         setMode,

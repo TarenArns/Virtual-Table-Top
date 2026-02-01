@@ -1,5 +1,5 @@
 import { memo } from "react";
-import type { gridItem } from "@/features/grid/types/types";
+import type { gridItem } from "@/features/types/types";
 
 type Props = {
   item: gridItem;

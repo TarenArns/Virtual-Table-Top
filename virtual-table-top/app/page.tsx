@@ -3,8 +3,8 @@ import edvard from "@/public/brad (edvard sangren).jpg";
 import three from "@/public/sam (three).jpg";
 import cheese from "@/public/colton (big cheese).jpg";
 import miles from "@/public/will (miles dei).jpg";
-import type { playerCharacter, npcCharacter, gridItem } from "@/features/grid/types/types";
-import Grid from "@/features/grid/components/grid";
+import type { playerCharacter, npcCharacter, gridItem } from "@/features/types/types";
+import Grid from "@/features/components/grid/grid";
 
 
 export default function Home() {

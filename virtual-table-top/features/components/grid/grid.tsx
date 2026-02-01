@@ -1,11 +1,11 @@
 "use client";
-import { buildGrid, gridReducer } from "@/features/grid/utils/utils";
+import { buildGrid, gridReducer } from "@/features/utils/utils";
 import { TransformComponent, TransformWrapper, useControls } from "react-zoom-pan-pinch";
 import { MapPin } from "lucide-react";
 import { useReducer, useState, useMemo, useCallback } from "react";
 import { Button } from "@/common/ui/button";
 import background from "@/public/Background.jpg";
-import type { gridItem, grid, gridMode } from "@/features/grid/types/types";
+import type { gridItem, grid, gridMode } from "@/features/types/types";
 import {
     Drawer,
     DrawerClose,
@@ -23,15 +23,16 @@ import {
     FieldLegend,
     FieldSet,
 } from "@/common/ui/field"
-import { useGridState } from "@/features/grid/hooks/gridState";
+import { useGridState } from "@/features/hooks/gridState";
 
 import { Input } from "@/common/ui/input"
 import GridCell from "./gridCell";
+import ToolsDrawer from "../toolsDrawer/toolsDrawer";
 
 
-export default function Grid(props: { items: gridItem[], dimensions: { rows: number; columns: number; }; }) {
+export default function Grid({ items, dimensions, }: { items: gridItem[]; dimensions: { rows: number; columns: number }; }) {
 
-    const gridState = useGridState(props.items, props.dimensions, background.src);
+    const gridState = useGridState(items, dimensions, background.src);
 
     const Controls = () => {
         const { resetTransform } = useControls();
@@ -57,28 +58,7 @@ export default function Grid(props: { items: gridItem[], dimensions: { rows: num
     return (
         <main className="h-full w-full flex">
             <section className="w-[25%] border-r border-gray-300">
-                <Drawer open={gridState.isDrawerOpen} onOpenChange={gridState.setisDrawerOpen}>
-                    <DrawerTrigger asChild>
-                        <Button>See other tools</Button>
-                    </DrawerTrigger>
-                    <DrawerContent>
-                        <div className="mx-auto w-full max-w-sm">
-                            <DrawerHeader>
-                                <DrawerTitle>Tools</DrawerTitle>
-                            </DrawerHeader>
-                            <div className="p-4 pb-0 flex items-center justify-center">
-                                <Button className="w-full m-2" onClick={() => gridState.clickAddPlayer()}>Add Player</Button>
-                                <Button className="w-full m-2" onClick={() => gridState.clickAddNPC()}>Add NPC</Button>
-                                <Button className="w-full m-2" onClick={() => gridState.clickRemoveItem()}>Remove Item</Button>
-                            </div>
-                            <DrawerFooter>
-                                <DrawerClose asChild>
-                                    <Button variant="destructive">Close</Button>
-                                </DrawerClose>
-                            </DrawerFooter>
-                        </div>
-                    </DrawerContent>
-                </Drawer>
+                <ToolsDrawer gridState={gridState} />
                 <div className="selected-item-info p-4 border-b border-gray-300">
                     {gridState.selectedItem?.stats && (gridState.mode !== "removing") ? (
                         (gridState.selectedItem.type === 'player' || gridState.selectedItem.type === 'npc') ? (
