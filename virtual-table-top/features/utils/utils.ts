@@ -29,13 +29,13 @@ export function swapPositions(grid: grid, toMove: gridItem, toReplace: gridItem)
         ...grid,
         grid: grid.grid.map(row => [...row])
     }
-    
+
     const movedItem = { ...toMove, position: { x: toReplace.position.x, y: toReplace.position.y } }
     const replacedItem = { ...toReplace, position: { x: toMove.position.x, y: toMove.position.y } }
-    
+
     newGrid.grid[toMove.position.y][toMove.position.x] = replacedItem
     newGrid.grid[toReplace.position.y][toReplace.position.x] = movedItem
-    
+
     return newGrid
 }
 
@@ -127,38 +127,20 @@ export function removeItemFromGrid(grid: grid, xPos: number, yPos: number): grid
 }
 
 export function gridReducer(state: grid, action: gridAction): grid {
-  switch (action.type) {
-    case "ADD_PLAYER":
-      return addPlayerToGrid(
-        action.formData,
-        state,
-        action.x,
-        action.y
-      );
+    switch (action.type) {
+        case "ADD_PLAYER":
+            return addPlayerToGrid(action.formData, state, action.x, action.y);
 
-    case "ADD_NPC":
-      return addNPCToGrid(
-        action.formData,
-        state,
-        action.x,
-        action.y
-      );
+        case "ADD_NPC":
+            return addNPCToGrid(action.formData, state, action.x, action.y);
 
-    case "MOVE_ITEM":
-      return swapPositions(
-        state,
-        action.from,
-        action.to
-      );
+        case "MOVE_ITEM":
+            return swapPositions(state, action.from, action.to);
 
-    case "REMOVE_ITEM":
-      return removeItemFromGrid(
-        state,
-        action.x,
-        action.y
-      );
+        case "REMOVE_ITEM":
+            return removeItemFromGrid(state, action.x, action.y);
 
-    default:
-      return state;
-  }
+        default:
+            return state;
+    }
 }

@@ -1,7 +1,6 @@
 import { useState, useReducer, useCallback } from "react";
 import { gridItem, gridMode } from "../types/types";
 import { gridReducer, buildGrid } from "../utils/utils";
-import { cn } from "@/lib/utils";
 
 export function useGridState(items: gridItem[], dimensions: { rows: number; columns: number }, src: string) {
     const [selectedItem, setSelectedItem] = useState<gridItem | null>(null);
