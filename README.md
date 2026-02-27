@@ -23,9 +23,19 @@ I am using this as a way to practice my programming skills and therefore will be
 
 ## Getting Started
 
+Navigate to server:
+```bash
+cd server
+```
+
+Run development server:
+```bash
+uvicorn main:app --reload
+```
+
 Navigate to Frontend:
 ```bash
-cd virtual-table-top
+cd ../virtual-table-top
 ```
 
 Install dependencies:
